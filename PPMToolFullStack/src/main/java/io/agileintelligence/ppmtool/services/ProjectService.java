@@ -23,7 +23,7 @@ public class ProjectService {
                 throw new ProjectIdException("Project not found");
             }
         }
-        
+
         try {
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             return projectRepository.save(project);
