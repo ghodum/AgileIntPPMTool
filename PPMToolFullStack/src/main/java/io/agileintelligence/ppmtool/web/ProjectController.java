@@ -8,12 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,32 @@ public class ProjectController {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(result);
         if (errorMap != null) return errorMap;
 
-        project = projectService.saveOrUpdateProject(project);
+        project = projectService.saveOrUpdateProject(project, null);
         return new ResponseEntity<>(project, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<?> getProjectById(@PathVariable String projectId) {
+        return new ResponseEntity<>(projectService.findProjectByIdentifier(projectId), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public Iterable<Project> findAll() {
+        return projectService.findAllProjects();
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
+        projectService.deleteProjectByIdentifier(projectId);
+        return new ResponseEntity<>("Project '" + projectId.toUpperCase() + "' was deleted", HttpStatus.OK);
+    }
+
+    @PutMapping("/{projectId}")
+    public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, @PathVariable Long projectId, BindingResult result) {
+        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(result);
+        if (errorMap != null) return errorMap;
+
+        project = projectService.saveOrUpdateProject(project, projectId);
+        return new ResponseEntity<>(project, HttpStatus.OK);
     }
 }

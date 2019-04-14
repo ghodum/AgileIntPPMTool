@@ -21,7 +21,7 @@ public class MapValidationErrorService {
                 errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
             }
 
-            return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
         }
 
         return null;
